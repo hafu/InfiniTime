@@ -356,6 +356,17 @@ void SystemTask::Work() {
             }
           }
           break;
+        case Messages::OnNewQuarterHour:
+          using Pinetime::Controllers::AlarmController;
+          if (settingsController.GetNotificationStatus() != Controllers::Settings::Notification::Sleep &&
+              settingsController.GetChimeOption() == Controllers::Settings::ChimesOption::QuarterHours &&
+              alarmController.State() != AlarmController::AlarmState::Alerting) {
+            if (state == SystemTaskState::Sleeping) {
+              GoToRunning();
+              displayApp.PushMessage(Pinetime::Applications::Display::Messages::Chime);
+            }
+          }
+          break;
         case Messages::OnChargingEvent:
           batteryController.ReadPowerState();
           displayApp.PushMessage(Applications::Display::Messages::OnChargingEvent);
