@@ -40,6 +40,11 @@ WatchFaceDigital::WatchFaceDigital(Controllers::DateTime& dateTimeController,
   lv_obj_set_style_local_text_color(chimeIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
   lv_obj_align(chimeIcon, notificationIcon, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
 
+  chimeCountdownValue = lv_label_create(lv_scr_act(), nullptr);
+  lv_obj_set_style_local_text_color(chimeCountdownValue, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+  lv_label_set_text_static(chimeCountdownValue, "");
+  lv_obj_align(chimeCountdownValue, chimeIcon, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
+
   label_date = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_align(label_date, lv_scr_act(), LV_ALIGN_CENTER, 0, 60);
   lv_obj_set_style_local_text_color(label_date, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x999999));
@@ -94,6 +99,33 @@ void WatchFaceDigital::Refresh() {
   if (settingsController.GetNotificationStatus() != Controllers::Settings::Notification::Off && chimeOption.Get() != Controllers::Settings::ChimesOption::None) {
       lv_label_set_text_static(chimeIcon, Symbols::bell);
       lv_obj_align(chimeIcon, notificationIcon, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
+  }
+
+  if (settingsController.GetNotificationStatus() != Controllers::Settings::Notification::Off && chimeOption.Get() != Controllers::Settings::ChimesOption::None) {
+      uint8_t minute = dateTimeController.Minutes();
+      uint8_t countDown = 0;
+      if (chimeOption.Get() == Controllers::Settings::ChimesOption::Hours) {
+        countDown = 60 - minute;
+      } else if (chimeOption.Get() == Controllers::Settings::ChimesOption::HalfHours) {
+        if (minute > 30) {
+            countDown = 60 - minute;
+        }
+        else {
+            countDown = 30 - minute;
+        }
+      } else {
+        if (minute > 45) {
+            countDown = 60 - minute;
+        } else if (minute > 30) {
+            countDown = 45 - minute;
+        } else if (minute > 15) {
+            countDown = 30 - minute;
+        } else {
+            countDown = 15 - minute;
+        }
+      }
+      lv_label_set_text_fmt(chimeCountdownValue, "t-%dm", countDown);
+      lv_obj_align(chimeCountdownValue, chimeIcon, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
   }
 
   currentDateTime = std::chrono::time_point_cast<std::chrono::minutes>(dateTimeController.CurrentDateTime());

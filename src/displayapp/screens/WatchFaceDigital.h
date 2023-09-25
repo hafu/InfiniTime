@@ -62,6 +62,7 @@ namespace Pinetime {
         lv_obj_t* stepValue;
         lv_obj_t* notificationIcon;
         lv_obj_t* chimeIcon;
+        lv_obj_t* chimeCountdownValue;
 
         Controllers::DateTime& dateTimeController;
         Controllers::NotificationManager& notificationManager;
