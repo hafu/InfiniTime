@@ -35,6 +35,11 @@ WatchFaceDigital::WatchFaceDigital(Controllers::DateTime& dateTimeController,
   lv_label_set_text_static(notificationIcon, NotificationIcon::GetIcon(false));
   lv_obj_align(notificationIcon, nullptr, LV_ALIGN_IN_TOP_LEFT, 0, 0);
 
+  chimeIcon = lv_label_create(lv_scr_act(), nullptr);
+  lv_label_set_text_static(chimeIcon, Symbols::none);
+  lv_obj_set_style_local_text_color(chimeIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+  lv_obj_align(chimeIcon, notificationIcon, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
+
   label_date = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_align(label_date, lv_scr_act(), LV_ALIGN_CENTER, 0, 60);
   lv_obj_set_style_local_text_color(label_date, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x999999));
@@ -83,6 +88,12 @@ void WatchFaceDigital::Refresh() {
   notificationState = notificationManager.AreNewNotificationsAvailable();
   if (notificationState.IsUpdated()) {
     lv_label_set_text_static(notificationIcon, NotificationIcon::GetIcon(notificationState.Get()));
+  }
+
+  chimeOption = settingsController.GetChimeOption();
+  if (settingsController.GetNotificationStatus() != Controllers::Settings::Notification::Off && chimeOption.Get() != Controllers::Settings::ChimesOption::None) {
+      lv_label_set_text_static(chimeIcon, Symbols::bell);
+      lv_obj_align(chimeIcon, notificationIcon, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
   }
 
   currentDateTime = std::chrono::time_point_cast<std::chrono::minutes>(dateTimeController.CurrentDateTime());

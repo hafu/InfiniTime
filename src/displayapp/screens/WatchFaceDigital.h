@@ -51,6 +51,7 @@ namespace Pinetime {
         Utility::DirtyValue<bool> notificationState {};
         using days = std::chrono::duration<int32_t, std::ratio<86400>>; // TODO: days is standard in c++20
         Utility::DirtyValue<std::chrono::time_point<std::chrono::system_clock, days>> currentDate;
+        Utility::DirtyValue<Controllers::Settings::ChimesOption> chimeOption {};
 
         lv_obj_t* label_time;
         lv_obj_t* label_time_ampm;
@@ -60,6 +61,7 @@ namespace Pinetime {
         lv_obj_t* stepIcon;
         lv_obj_t* stepValue;
         lv_obj_t* notificationIcon;
+        lv_obj_t* chimeIcon;
 
         Controllers::DateTime& dateTimeController;
         Controllers::NotificationManager& notificationManager;
