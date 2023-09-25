@@ -39,7 +39,7 @@ QuickSettings::QuickSettings(Pinetime::Applications::DisplayApp* app,
     brightness {brightness},
     motorController {motorController},
     settingsController {settingsController},
-    statusIcons(batteryController, bleController) {
+    statusIcons(settingsController, batteryController, bleController) {
 
   statusIcons.Create();
 
@@ -160,6 +160,8 @@ void QuickSettings::OnButtonEvent(lv_obj_t* object) {
       lv_obj_set_state(btn3, static_cast<lv_state_t>(ButtonState::NotificationsOn));
       motorController.RunForDuration(35);
     }
+
+    statusIcons.Update();
 
   } else if (object == btn4) {
     settingsController.SetSettingsMenu(0);
